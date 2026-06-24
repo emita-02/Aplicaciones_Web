@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import axios from "axios"
-
+import { toast } from "react-toastify"
 
 const getAuthHeaders = () => {
     const storedUser = JSON.parse(localStorage.getItem("auth-token"))
@@ -25,8 +25,21 @@ const storeProfile = create((set) => ({
         } catch (error) {
             console.error(error)
         }
+    },
+
+    updateProfile:async(url, data)=>{
+        try {
+            const respuesta = await axios.put(url, data, getAuthHeaders())
+            set({ user: respuesta.data })
+            toast.success("Perfil actualizado correctamente")
+        } catch (error) {
+            console.log(error)
+            toast.error(error.response?.data?.msg)
+        }
     }
+
     })
+    
 )
 
 export default storeProfile
