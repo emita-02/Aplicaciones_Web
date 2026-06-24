@@ -36,6 +36,15 @@ const storeProfile = create((set) => ({
             console.log(error)
             toast.error(error.response?.data?.msg)
         }
+    },
+    updatePasswordProfile:async(url,data)=>{
+        try {
+            const respuesta = await axios.put(url, data, getAuthHeaders())
+            return respuesta
+        } catch (error) {
+            console.log(error)
+            toast.error(error.response?.data?.msg)
+        }
     }
 
     })
