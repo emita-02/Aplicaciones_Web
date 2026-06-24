@@ -1,14 +1,29 @@
 import { useState } from "react"
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"
-import { Link } from "react-router"
-
-
+import { Link, useNavigate } from "react-router"
+import {useFetch} from '../hooks/useFetch'
+import { ToastContainer } from 'react-toastify'
+import { useForm } from 'react-hook-form'
 
 const Login = () => {
-    const [showPassword, setShowPassword] = useState(false);
+    
+    const [showPassword, setShowPassword] = useState(false)
+    const navigate = useNavigate()
+    const { register, handleSubmit, formState: { errors } } = useForm()
+    const  {fetchDataBackend,loading} = useFetch()
+
+    const loginUser = async(dataForm) => {
+        const url = `${import.meta.env.VITE_BACKEND_URL}/veterinario/login`
+        const response = await fetchDataBackend(url, dataForm,'POST')
+        if(response){
+            navigate('/dashboard')
+        }
+    }
 
     return (
         <div className="flex flex-col sm:flex-row h-screen">
+
+            <ToastContainer />
 
             {/* Imagen */}
             <div className="hidden sm:block sm:w-1/2 bg-[url('/public/images/doglogin.jpg')] bg-cover bg-center"></div>
@@ -24,7 +39,7 @@ const Login = () => {
 
 
                     {/* Formulario */}
-                    <form>
+                    <form onSubmit={handleSubmit(loginUser)}>
 
                         {/* Campo Correo */}
                         <div className="mb-3">
@@ -33,7 +48,9 @@ const Login = () => {
                                 type="email"
                                 placeholder="Ingresa tu correo"
                                 className="w-full rounded-md border border-gray-300 focus:ring-1 px-2 py-1 text-gray-500"
+                                {...register("email", { required: "El correo es obligatorio" })}
                             />
+                                {errors.email && <p className="text-red-800">{errors.email.message}</p>}
                         </div>
 
 
@@ -47,7 +64,9 @@ const Login = () => {
                                     type={showPassword ? "text" : "password"}
                                     placeholder="************"
                                     className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10"
+                                    {...register("password", { required: "La contraseña es obligatoria" })}
                                 />
+                                    {errors.password && <p className="text-red-800">{errors.password.message}</p>}
 
                                 <button
                                     type="button"
@@ -62,9 +81,10 @@ const Login = () => {
 
 
                         {/* Botón login */}
-                        <Link to="/dashboard" className="block w-full py-2 text-center bg-gray-500 text-white rounded-xl hover:bg-gray-900 duration-300">
-                            Iniciar sesión
-                        </Link>
+                            <button className="py-2 w-full block text-center bg-gray-500 text-slate-300 border rounded-xl 
+                            hover:scale-100 duration-300 hover:bg-gray-900 hover:text-white" disabled={loading}>
+                            {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+                            </button>
 
                     </form>
 
