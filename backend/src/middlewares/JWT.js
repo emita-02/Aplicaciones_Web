@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import Veterinario from "../models/Veterinario.js"
-
+import Paciente from "../models/Paciente.js"
 
 /**
  * Crear token JWT
@@ -26,6 +26,12 @@ const verificarTokenJWT = async (req, res, next) => {
             const veterinarioBDD = await Veterinario.findById(id).lean().select("-password")
             if (!veterinarioBDD) return res.status(401).json({ msg: "Usuario no encontrado" })
             req.veterinarioHeader = veterinarioBDD
+            next()
+        }
+        else{
+            const pacienteBDD = await Paciente.findById(id).lean().select("-password")
+            if (!pacienteBDD) return res.status(401).json({ msg: "Usuario no encontrado" })
+            req.pacienteHeader = pacienteBDD
             next()
         }
     } catch (error) {
