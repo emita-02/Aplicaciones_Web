@@ -1,12 +1,23 @@
 import {Link} from 'react-router'
-
+import { useForm } from 'react-hook-form';
+import { ToastContainer} from 'react-toastify'
+import { useFetch } from '../hooks/useFetch'
 
 export const Forgot = () => {
 
+    const { register, handleSubmit, formState: { errors } } = useForm()
+    const {fetchDataBackend,loading} = useFetch()
+
+    const sendMail = async (dataForm) => {
+        const url = `${import.meta.env.VITE_BACKEND_URL}/recuperarpassword`
+        await fetchDataBackend(url, dataForm,'POST')
+    }
 
     return (
 
         <div className="flex flex-col sm:flex-row h-screen">
+
+            <ToastContainer/>
 
             <div className="w-full sm:w-1/2 h-screen bg-white flex justify-center items-center">
 
@@ -17,19 +28,23 @@ export const Forgot = () => {
 
 
                     {/* Formulario */}
-                    <form >
+                    <form onSubmit={handleSubmit(sendMail)}>
 
                         {/* Campo correo electrónico */}
                         <div className="mb-1">
                             <label className="mb-2 block text-sm font-semibold">Correo electrónico</label>
                             <input type="email" placeholder="Ingresa un correo electrónico válido" className="block w-full rounded-md border border-gray-300 py-1 px-1.5 text-gray-500"
+                            {...register("email", { required: "El correo electrónico es obligatorio" })}
                             />
+                            {errors.email && <p className="text-red-800">{errors.email.message}</p>}
                         </div>
 
 
                         {/* Botón Forgot password */}
                         <div className="mb-3">
-                            <button className="bg-gray-600 text-slate-300 border py-2 w-full rounded-xl mt-5 hover:scale-105 duration-300 hover:bg-gray-900 hover:text-white">Enviar correo 
+                            <button className="bg-gray-600 text-slate-300 border py-2 w-full rounded-xl mt-5 hover:scale-105 
+                            duration-300 hover:bg-gray-900 hover:text-white" disabled={loading}>
+                              {loading ? 'Enviando...' : 'Enviar correo'} 
                             </button>
                         </div>
 
