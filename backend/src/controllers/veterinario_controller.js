@@ -22,7 +22,28 @@ const registro = async (req,res)=>{
 
 }
 
+const confirmarMail = async (req, res) => {
+    try {
+        // Paso 1 
+        const { token } = req.params
+        // Paso 2
+        const veterinarioBDD = await Veterinario.findOne({ token })
+        if (!veterinarioBDD) return res.status(404).json({ msg: "Token inválido o cuenta ya confirmada" })
+        // Paso 3
+        veterinarioBDD.token = null
+        veterinarioBDD.confirmEmail = true
+        await veterinarioBDD.save()
+        // Paso 4
+        res.status(200).json({ msg: "Cuenta confirmada, ya puedes iniciar sesión" })
+
+    } catch (error) {
+    console.error(error)
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+    }
+}
+
 
 export {
-    registro
+    registro,
+    confirmarMail
 }
