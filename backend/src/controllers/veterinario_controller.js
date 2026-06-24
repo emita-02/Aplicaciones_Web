@@ -181,6 +181,21 @@ const actualizarPerfil = async (req,res)=>{
     }
 }
 
+const actualizarPassword = async (req,res)=>{
+    try {
+        const veterinarioBDD = await Veterinario.findById(req.veterinarioHeader._id)
+        if(!veterinarioBDD) return res.status(404).json({msg:`Lo sentimos, no existe el veterinario ${id}`})
+        const verificarPassword = await veterinarioBDD.matchPassword(req.body.passwordactual)
+        if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password actual no es el correcto"})
+        veterinarioBDD.password = await veterinarioBDD.encryptPassword(req.body.passwordnuevo)
+        await veterinarioBDD.save()
+
+    res.status(200).json({msg:"Password actualizado correctamente"})
+    } catch (error) {
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+    }
+}
+
 export {
     registro,
     confirmarMail,
@@ -189,5 +204,6 @@ export {
     crearNuevoPassword,
     login,
     perfil,
-    actualizarPerfil
+    actualizarPerfil,
+    actualizarPassword
 }
