@@ -143,11 +143,17 @@ const login = async(req,res)=>{
     }
 }
 
+const perfil =(req,res)=>{
+	const {token,confirmEmail,createdAt,updatedAt,__v,...datosPerfil} = req.veterinarioHeader
+    res.status(200).json(datosPerfil)
+}
+
 export {
     registro,
     confirmarMail,
     recuperarPassword,
     comprobarTokenPasword,
     crearNuevoPassword,
-    login
+    login,
+    perfil
 }
