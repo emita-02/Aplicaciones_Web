@@ -1,9 +1,11 @@
 import { Link, Outlet, useLocation } from 'react-router'
+import storeAuth from '../context/storeAuth'
 
 
 const Dashboard = () => {
     const location = useLocation()
     const urlActual = location.pathname
+    const { clearToken } = storeAuth()
 
 
     return (
@@ -93,7 +95,7 @@ const Dashboard = () => {
                     {/* Botón salir */}
                     <div>
                         <Link to='/' className=" text-white mr-3 text-md block hover:bg-red-900 text-center
-                        bg-red-800 px-4 py-1 rounded-lg">Salir</Link>
+                        bg-red-800 px-4 py-1 rounded-lg" onClick={() => clearToken()}  >Salir</Link>
                     </div>
                 
                 </div>

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router"
 import {useFetch} from '../hooks/useFetch'
 import { ToastContainer } from 'react-toastify'
 import { useForm } from 'react-hook-form'
+import storeAuth from "../context/storeAuth"
 
 const Login = () => {
     
@@ -11,10 +12,13 @@ const Login = () => {
     const navigate = useNavigate()
     const { register, handleSubmit, formState: { errors } } = useForm()
     const  {fetchDataBackend,loading} = useFetch()
+    const { setToken, setRol } = storeAuth()
 
     const loginUser = async(dataForm) => {
         const url = `${import.meta.env.VITE_BACKEND_URL}/veterinario/login`
         const response = await fetchDataBackend(url, dataForm,'POST')
+        setToken(response.token)
+        setRol(response.rol)
         if(response){
             navigate('/dashboard')
         }
