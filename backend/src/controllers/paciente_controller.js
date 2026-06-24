@@ -42,7 +42,18 @@ const registrarPaciente = async(req,res)=>{
     }
 }
 
+const listarPacientes = async (req,res)=>{
+    try {
+        const pacientes = await Paciente.find({ estadoMascota: true, veterinario: req.veterinarioHeader._id }).select("-salida -createdAt -updatedAt -__v").populate('veterinario','_id nombre apellido')
+        res.status(200).json(pacientes)
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+    }
+}
 
 export{
-    registrarPaciente
+    registrarPaciente,
+    listarPacientes
 }
